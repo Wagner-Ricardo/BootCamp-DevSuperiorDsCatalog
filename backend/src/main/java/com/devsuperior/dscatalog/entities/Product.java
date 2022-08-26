@@ -26,11 +26,12 @@ public class Product implements Serializable{
 	private Long id;
 	private String name;
 	
-	@Column(columnDefinition = "TEXT")//mapeamento para texto longo e substituir ovar char do sql
+	@Column(columnDefinition = "TEXT")//mapeamento para texto longo e substituir o var char do sql
 	private String description;
 	private Double price;
 	private String imgUrl;
 	
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant date;
 	
 	@ManyToMany

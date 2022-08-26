@@ -27,7 +27,7 @@ import com.devsuperior.dscatalog.services.ProductService;
 public class ProductResource {
 
 	@Autowired
-	private ProductService categoryService;
+	private ProductService productService;
 
 	@GetMapping
 	public ResponseEntity<Page<ProductDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -39,32 +39,32 @@ public class ProductResource {
 
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 
-		Page<ProductDTO> listProduct = categoryService.findAllPaged(pageRequest);
+		Page<ProductDTO> listProduct = productService.findAllPaged(pageRequest);
 		return ResponseEntity.ok().body(listProduct);
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
-		ProductDTO dto = categoryService.findById(id);
+		ProductDTO dto = productService.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@PostMapping
 	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
-		dto = categoryService.insert(dto);
+		dto = productService.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
-		dto = categoryService.update(id, dto);
+		dto = productService.update(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		categoryService.delete(id);
+		productService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 

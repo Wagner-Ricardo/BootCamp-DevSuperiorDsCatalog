@@ -28,21 +28,21 @@ import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 public class ProductService {
 
 	@Autowired
-	private CategoryRepository repository;
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
-	private ProductRepository categoryRepository;
+	private ProductRepository productRepository;
 
 	@Transactional (readOnly = true)
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
-		Page<Product>listPaged = categoryRepository.findAll(pageRequest);
+		Page<Product>listPaged = productRepository.findAll(pageRequest);
 		return listPaged.map(x -> new ProductDTO(x));
 		
 	}
 
 	@Transactional (readOnly = true)
 	public ProductDTO findById(Long id) {
-		Optional <Product> obj = categoryRepository.findById(id);
+		Optional <Product> obj = productRepository.findById(id);
 		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new ProductDTO(entity, entity.getCategories());
 	}
@@ -52,17 +52,17 @@ public class ProductService {
 		Product entity = new Product();
 		copyDtoToEntity(dto, entity);
 		//entity.setName(dto.getName());
-		entity = categoryRepository.save(entity);
+		entity = productRepository.save(entity);
 		return new ProductDTO(entity);
 	}
 
 	@Transactional
 	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
-			Product entity =  categoryRepository.getOne(id);
+			Product entity =  productRepository.getOne(id);
 			copyDtoToEntity(dto, entity);
 			//entity.setName(dto.getName());
-			entity = categoryRepository.save(entity);
+			entity = productRepository.save(entity);
 			return new ProductDTO(entity);
 		}
 
@@ -80,7 +80,7 @@ public class ProductService {
 		
 		entity.getCategories().clear();
 		for(CategoryDTO catDTO: dto.getCategories()) {
-			Category category = repository.getOne(catDTO.getId());
+			Category category = categoryRepository.getOne(catDTO.getId());
 			entity.getCategories().add(category);
 		}
 		
@@ -89,7 +89,7 @@ public class ProductService {
 	public void delete(Long id) {
 		
 		try {
-			categoryRepository.deleteById(id);
+			productRepository.deleteById(id);
 		} 
 		catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found" +id);
