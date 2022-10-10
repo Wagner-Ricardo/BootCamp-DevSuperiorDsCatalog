@@ -20,45 +20,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.devsuperior.dscatalog.dto.ProductDTO;
-import com.devsuperior.dscatalog.services.ProductService;
+import com.devsuperior.dscatalog.dto.UserDTO;
+import com.devsuperior.dscatalog.dto.UserInsertDTO;
+import com.devsuperior.dscatalog.services.UserService;
 
 @RestController
-@RequestMapping(value = "/products")
-public class ProductResource {
+@RequestMapping(value = "/users")
+public class UserResource {
 
 	@Autowired
-	private ProductService productService;
+	private UserService userService;
 
 	@GetMapping
-	public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable){
-		Page<ProductDTO> listProduct = productService.findAllPaged(pageable);
-		return ResponseEntity.ok().body(listProduct);
+	public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable){
+		Page<UserDTO> listUser = userService.findAllPaged(pageable);
+		return ResponseEntity.ok().body(listUser);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
-		ProductDTO dto = productService.findById(id);
+	public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
+		UserDTO dto = userService.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@PostMapping
-	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
-		dto = productService.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+	public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto) {
+		UserDTO newDto = userService.insert(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
-		dto = productService.update(id, dto);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO dto) {
+		dto = userService.update(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		productService.delete(id);
+		userService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
