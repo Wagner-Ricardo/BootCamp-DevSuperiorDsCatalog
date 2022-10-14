@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.dto;
 
 import java.io.Serializable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,11 +14,12 @@ public class UserDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank(message = "Field mandatory")
 	private String firstName;
 	private String lastName;
 	
-	@Email
+	@Email(message = " Insert email valided")
 	private String email;
 	Set<RoleDTO> roles =  new HashSet<>();
 	
