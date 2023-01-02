@@ -1,6 +1,8 @@
 package com.devsuperior.dscatalog.services;
 
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -28,15 +30,27 @@ public class ProductService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Transactional (readOnly = true)
-	public Page<ProductDTO> findAllPaged(Pageable pageable){
+
+
+	/*
+	 * public Page<ProductDTO> findAllPaged(Pageable pageable){
 		Page<Product>listPaged = productRepository.findAll(pageable);
 		return listPaged.map(x -> new ProductDTO(x));
+		}
+	 */
+	@Transactional (readOnly = true)
+	public Page<ProductDTO> findAllPaged(Long categoryId, String name, Pageable pageable) {
+		List<Category> categories = (categoryId == 0) ? null :
+			Arrays.asList(categoryRepository.getOne(categoryId));
 		
+		Page<Product> list = productRepository.find(categories, name, pageable);
+		return list.map(x -> new ProductDTO(x));
+
+
 	}
 
 	@Transactional (readOnly = true)
@@ -76,31 +90,31 @@ public class ProductService {
 		entity.setDate(dto.getDate());
 		entity.setImgUrl(dto.getImgUrl());
 		entity.setPrice(dto.getPrice());
-		
+
 		entity.getCategories().clear();
 		for(CategoryDTO catDTO: dto.getCategories()) {
 			Category category = categoryRepository.getOne(catDTO.getId());
 			entity.getCategories().add(category);
 		}
-		
+
 	}
 
 	public void delete(Long id) {
-		
+
 		try {
 			productRepository.deleteById(id);
 		} 
 		catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found" +id);
 		}
-		
+
 		catch(DataIntegrityViolationException e) {
 			throw new DataBaseException("Integrity violation");
-			
+
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 }
